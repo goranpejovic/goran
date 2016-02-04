@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Google Drive Python Uploader script
-# Author: Goran Pejovic <gpejovic@es.net>
+# Author: Goran Pejovic <goran@itn.me>
 #
 # Should work on python 2.6 and 2.7. Python 3 not tested.
 # Use this script to upload files to Google drive.
@@ -30,7 +30,7 @@ CLIENT_SECRET_FILE = 'client_secrets.json'
 CREDENTIALS_FILE = 'credentials.json'
 APPLICATION_NAME = 'GDrive Uploader'
 SCOPES = 'https://www.googleapis.com/auth/drive'
-UPLOADFOLDER = '0B1lhjGEeZ8LdaVBqQmhLbUNKTzA'
+UPLOADFOLDER = 'FOLDER_UUID'
 
 # Message describing how to use the script.
 USAGE = """
