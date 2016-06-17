@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# SYNTAX:
+#       handle_service
+#
+# DESCRIPTION:
+#       Restart service in case of failure.
+#
+# AUTHORS:
+#       goran@itn.me
+#
+# Event 
+
+# Uncomment below to get debug information about the environment variables set by Nagios Core
+
+#date >> /tmp/httpd_handler.log; env | sort  >> /tmp/handler.log; echo "=======================" >> /tmp/httpd_handler.log
+MAILTO="goran@itn.me"
+SERVICE="httpd"
+LOCKFILE="/tmp/httpd_lockfile"
+SSHKEY="~/.ssh/id_rsa"
+SSHUSER="nagios"
+
+# If Service State is CRITICAL (options are OK, WARNING, CRITICAL and UNKNOWN)
+# and Service State Type is HARD (options are HARD and SOFT)
+# then execute event handler action
+
+if [[ "$NAGIOS_SERVICESTATE" = "CRITICAL" && "$NAGIOS_SERVICESTATETYPE" = "HARD" ]]
+then
+        # insert event handler action here...
+        logger "$SERVICE handler: Trigger Event: $NAGIOS_SERVICEOUTPUT"
+	if [[ -f $LOCKFILE ]]; then
+		echo "`date` - handler already executed before." >> $LOCKFILE
+	else
+		touch $LOCKFILE
+		/usr/local/nagios/libexec/check_by_ssh -H $NAGIOS_HOSTADDRESS -i $SSHKEY -l $SSHUSER -C "/usr/bin/sudo /usr/bin/systemctl restart $SERVICE" | mail -s "$SERVICE restarted" $MAILTO
+		if [[ $? -eq 0 ]]; then
+			rm -rf $LOCKFILE
+		fi
+	fi
+fi
